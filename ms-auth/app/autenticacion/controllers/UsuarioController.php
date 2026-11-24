@@ -28,7 +28,7 @@ class UsuarioController extends AbstractController
             throw new Exception('Usuario inactivo. Contacte al administrador.', 403);
         }
 
-        // Token simple: 64 caracteres hexadecimales aleatorios
+        // Token simple: con 64 caracteres hexadecimales aleatorios
         $usuario->token         = bin2hex(random_bytes(32));
         $usuario->sesion_activa = true;
         $usuario->save();
@@ -87,10 +87,7 @@ class UsuarioController extends AbstractController
             ->first();
     }
 
-    /**
-     * La base de datos entregada guarda las contraseñas en texto plano, por eso se
-     * compara directo. Si algún día se guardaran con hash, password_verify también funciona.
-     */
+    /**La base de datos entregada guarda las contraseñas en texto plano, por eso se compara directo.*/
     private function contrasenaCorrecta(string $ingresada, string $guardada): bool
     {
         return hash_equals($guardada, $ingresada) || password_verify($ingresada, $guardada);

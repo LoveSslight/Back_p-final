@@ -20,7 +20,7 @@ class Usuario extends Model
         'estado',
     ];
 
-    // Nunca se devuelven en el JSON aunque hagas toArray()
+    // Nunca se devuelven en el JSON aunque se haga toArray()
     protected $hidden = [
         'contrasena',
         'token',
