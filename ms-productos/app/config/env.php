@@ -1,10 +1,7 @@
 <?php
 declare(strict_types=1);
 
-/**
- * Lector mínimo de archivos .env (evita instalar una librería extra).
- * Se llaman cargarEnv/leerEnv para no chocar con el helper env() de Laravel.
- */
+/**Lector mínimo de archivos .env (evita instalar una librería extra). Se llama a cargarEnv/leerEnv para no chocar con el helper env() de Laravel.*/
 function cargarEnv(string $ruta): void
 {
     if (!is_file($ruta)) {

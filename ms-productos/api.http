@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:8003
+# Token obtenido en ms-auth (POST /login)
+@token = PEGA_AQUI_EL_TOKEN
+
+### Listar categorías
+GET {{baseUrl}}/categorias
+Authorization: Bearer {{token}}
+
+### Listar productos
+GET {{baseUrl}}/productos
+Authorization: Bearer {{token}}
+
+### Listar productos disponibles
+GET {{baseUrl}}/productos/disponibles
+Authorization: Bearer {{token}}
+
+### Listar por categoría
+GET {{baseUrl}}/productos/categoria/1
+Authorization: Bearer {{token}}
+
+### Obtener producto
+GET {{baseUrl}}/productos/1
+Authorization: Bearer {{token}}
+
+### Crear producto
+POST {{baseUrl}}/productos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nombre": "Ensalada César",
+    "descripcion": "Ensalada fresca con aderezo césar",
+    "precio": 15000,
+    "disponible": true,
+    "categoria_id": 1
+}
+
+### Actualizar producto
+PUT {{baseUrl}}/productos/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nombre": "Hamburguesa Especial",
+    "precio": 30000,
+    "disponible": true,
+    "categoria_id": 3
+}
+
+### Eliminar producto
+DELETE {{baseUrl}}/productos/1
+Authorization: Bearer {{token}}
