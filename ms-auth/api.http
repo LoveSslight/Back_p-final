@@ -1,0 +1,29 @@
+@baseUrl = http://localhost:8001
+# Pega aquí el token que devuelve el login
+@token = PEGA_AQUI_EL_TOKEN
+
+### Login con usuario
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "identificador": "admin",
+    "contrasena": "admin123"
+}
+
+### Login con correo
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "identificador": "admin@restaurante.com",
+    "contrasena": "admin123"
+}
+
+### Validar sesión
+GET {{baseUrl}}/validar
+Authorization: Bearer {{token}}
+
+### Logout
+POST {{baseUrl}}/logout
+Authorization: Bearer {{token}}
