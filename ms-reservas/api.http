@@ -1,0 +1,102 @@
+@baseUrl = http://localhost:8002
+# Token obtenido en ms-auth (POST /login)
+@token = PEGA_AQUI_EL_TOKEN
+
+### Listar mesas
+GET {{baseUrl}}/mesas
+Authorization: Bearer {{token}}
+
+### Obtener mesa
+GET {{baseUrl}}/mesas/1
+Authorization: Bearer {{token}}
+
+### Crear mesa
+POST {{baseUrl}}/mesas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "numero": "MESA-5",
+    "capacidad": 4,
+    "estado": "disponible"
+}
+
+### Editar mesa (capacidad y/o estado)
+PUT {{baseUrl}}/mesas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "capacidad": 6,
+    "estado": "disponible"
+}
+
+### Cambiar estado de mesa
+PATCH {{baseUrl}}/mesas/1/estado
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "estado": "ocupada"
+}
+
+### Listar reservas
+GET {{baseUrl}}/reservas
+Authorization: Bearer {{token}}
+
+### Buscar reservas por fecha
+GET {{baseUrl}}/reservas/fecha/2026-12-01
+Authorization: Bearer {{token}}
+
+### Buscar reservas por cliente
+GET {{baseUrl}}/reservas/cliente/Carlos
+Authorization: Bearer {{token}}
+
+### Buscar reservas por estado
+GET {{baseUrl}}/reservas/estado/pendiente
+Authorization: Bearer {{token}}
+
+### Obtener reserva
+GET {{baseUrl}}/reservas/1
+Authorization: Bearer {{token}}
+
+### Crear reserva (usa una fecha futura)
+POST {{baseUrl}}/reservas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "nombre_cliente": "Martha Villamil",
+    "telefono_cliente": "3001234567",
+    "cantidad_personas": 4,
+    "fecha": "2026-12-01",
+    "hora": "19:00:00",
+    "observaciones": "Mesa cerca a la ventana",
+    "mesa_id": 2
+}
+
+### Editar reserva
+PUT {{baseUrl}}/reservas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "fecha": "2026-12-02",
+    "hora": "20:00:00",
+    "mesa_id": 3,
+    "cantidad_personas": 3,
+    "observaciones": "Cambio de horario"
+}
+
+### Cambiar estado de la reserva (confirmada | finalizada | cancelada)
+PATCH {{baseUrl}}/reservas/1/estado
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "estado": "confirmada"
+}
+
+### Cancelar reserva
+PATCH {{baseUrl}}/reservas/1/cancelar
+Authorization: Bearer {{token}}
