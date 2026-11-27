@@ -1,0 +1,66 @@
+@baseUrl = http://localhost:8004
+# Token obtenido en ms-auth (POST /login)
+@token = PEGA_AQUI_EL_TOKEN
+
+### Listar pedidos
+GET {{baseUrl}}/pedidos
+Authorization: Bearer {{token}}
+
+### Listar pedidos por estado
+GET {{baseUrl}}/pedidos/estado/pendiente
+Authorization: Bearer {{token}}
+
+### Obtener pedido (incluye subtotal, total y cantidad_total)
+GET {{baseUrl}}/pedidos/1
+Authorization: Bearer {{token}}
+
+### Crear pedido (la mesa NO puede estar "disponible")
+POST {{baseUrl}}/pedidos
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "mesa_id": 1,
+    "detalles": [
+        { "producto_id": 1, "nombre_producto": "Hamburguesa Especial", "cantidad": 2, "precio_unitario": 28000 },
+        { "producto_id": 2, "nombre_producto": "Limonada Natural", "cantidad": 2, "precio_unitario": 8000 }
+    ]
+}
+
+### Cambiar estado del pedido
+PATCH {{baseUrl}}/pedidos/1/estado
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "estado": "en_preparacion"
+}
+
+### Agregar producto al pedido
+POST {{baseUrl}}/pedidos/1/detalles
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "producto_id": 3,
+    "nombre_producto": "Cheesecake",
+    "cantidad": 1,
+    "precio_unitario": 12000
+}
+
+### Modificar cantidad de un producto del pedido
+PUT {{baseUrl}}/pedidos/1/detalles/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "cantidad": 3
+}
+
+### Quitar un producto del pedido
+DELETE {{baseUrl}}/pedidos/1/detalles/1
+Authorization: Bearer {{token}}
+
+### Eliminar pedido
+DELETE {{baseUrl}}/pedidos/1
+Authorization: Bearer {{token}}

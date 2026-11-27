@@ -23,7 +23,7 @@ class Pedido extends Model
         'total'    => 'float',
     ];
 
-    // La tabla no tiene columna "cantidad_total": se calcula y se agrega al JSON
+    // La tabla no tiene columna de "cantidad_total": se calcula y se agrega al JSON
     protected $appends = ['cantidad_total'];
 
     public function detalles()

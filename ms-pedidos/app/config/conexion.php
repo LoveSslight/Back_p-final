@@ -23,7 +23,7 @@ $capsule = new Capsule();
 $capsule->addConnection($base + ['database' => leerEnv('DB_NAME', 'ms_pedidos')]);
 // Conexión de SOLO LECTURA a ms_auth: la usa el middleware para validar el token
 $capsule->addConnection($base + ['database' => leerEnv('AUTH_DB_NAME', 'ms_auth')], 'auth');
-// Conexión de SOLO LECTURA a ms_reservas: valida el estado de la mesa al crear un pedido
+// Conexión de SOLO LECTURA a ms_reservas: valida el estado de la mesa al momento de crear un pedido
 $capsule->addConnection($base + ['database' => leerEnv('RESERVAS_DB_NAME', 'ms_reservas')], 'reservas');
 
 $capsule->setAsGlobal();
