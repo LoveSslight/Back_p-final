@@ -52,7 +52,7 @@ class ReservaController extends AbstractController
         return $reserva->toArray();
     }
 
-    // -Escritura-
+    // ---------- Escritura ----------
 
     public function crear(array $data): array
     {
@@ -93,14 +93,23 @@ class ReservaController extends AbstractController
             throw new Exception('No se puede editar una reserva cancelada o finalizada.', 400);
         }
 
-        // Solo estos campos seran editables; lo que no llegue conserva su valor actual
-        $editables = ['fecha', 'hora', 'mesa_id', 'cantidad_personas', 'observaciones'];
-        $datos     = array_merge(
+        // Solo estos campos son editables; lo que no llegue conserva su valor actual
+        $editables = [
+            'nombre_cliente', 'telefono_cliente', 'fecha', 'hora',
+            'mesa_id', 'cantidad_personas', 'observaciones',
+        ];
+        $datos = array_merge(
             $reserva->only($editables),
             array_intersect_key($data, array_flip($editables))
         );
 
         $this->validarDatos($datos, true);
+
+        // El formulario de edición también puede cambiar el estado; se valida antes de guardar nada
+        $nuevoEstado = isset($data['estado']) && trim((string) $data['estado']) !== ''
+            ? trim((string) $data['estado'])
+            : $reserva->estado;
+        $this->validarEstado($nuevoEstado);
 
         $fecha    = trim((string) $datos['fecha']);
         $hora     = $this->normalizarHora(trim((string) $datos['hora']));
@@ -114,6 +123,8 @@ class ReservaController extends AbstractController
         $mesa         = $this->validarMesaParaReserva($mesaId, $personas, $fecha, $hora, $id);
         $mesaAnterior = (int) $reserva->mesa_id;
 
+        $reserva->nombre_cliente    = trim((string) $datos['nombre_cliente']);
+        $reserva->telefono_cliente  = trim((string) $datos['telefono_cliente']);
         $reserva->fecha             = $fecha;
         $reserva->hora              = $hora;
         $reserva->mesa_id           = $mesaId;
@@ -125,6 +136,11 @@ class ReservaController extends AbstractController
             $this->liberarMesaSiCorresponde($mesaAnterior);
         }
         $this->marcarMesaReservada($mesa);
+
+        // Si cambió el estado (confirmar, finalizar, cancelar), se aplica y se sincroniza la mesa
+        if ($nuevoEstado !== $reserva->estado) {
+            return $this->aplicarEstado($reserva, $nuevoEstado);
+        }
 
         return Reserva::with('mesa')->find($id)->toArray();
     }
@@ -148,7 +164,7 @@ class ReservaController extends AbstractController
         return $this->aplicarEstado($reserva, 'cancelada');
     }
 
-    /** Permite pasar la reserva a confirmada o finalizada (o sino cancelarla). */
+    /** Permite pasar la reserva a confirmada o finalizada (o cancelarla). */
     public function cambiarEstado(int $id, string $estado): array
     {
         $this->validarEstado($estado);
@@ -168,10 +184,8 @@ class ReservaController extends AbstractController
 
     protected function validarDatos(array $data, bool $isUpdate = false): void
     {
-        if (!$isUpdate) {
-            $this->validarRequerido($data, 'nombre_cliente', 'El nombre del cliente es obligatorio.');
-            $this->validarRequerido($data, 'telefono_cliente', 'El teléfono es obligatorio.');
-        }
+        $this->validarRequerido($data, 'nombre_cliente', 'El nombre del cliente es obligatorio.');
+        $this->validarRequerido($data, 'telefono_cliente', 'El teléfono es obligatorio.');
 
         $this->validarRequerido($data, 'cantidad_personas', 'La cantidad de personas es obligatoria.');
         $this->validarRequerido($data, 'fecha', 'La fecha es obligatoria.');
@@ -185,7 +199,7 @@ class ReservaController extends AbstractController
         $this->validarFecha(trim((string) $data['fecha']));
     }
 
-    // - Reglas del negocio -
+    // ---------- Reglas de negocio ----------
 
     private function validarFechaNoPasada(string $fecha): void
     {
@@ -196,7 +210,7 @@ class ReservaController extends AbstractController
 
     /**
      * Valida que la mesa exista, esté en servicio, tenga capacidad suficiente
-     * y que no tenga ya otra reserva activa en la misma fecha y hora.
+     * y no tenga ya otra reserva activa en la misma fecha y hora.
      */
     private function validarMesaParaReserva(int $mesaId, int $personas, string $fecha, string $hora, ?int $ignorarReservaId): Mesa
     {
@@ -262,7 +276,7 @@ class ReservaController extends AbstractController
         }
     }
 
-    /** La mesa vuelve a "disponible" solo si ESTABA "reservada" y ya no tiene reservas activas. */
+    /** La mesa vuelve a "disponible" solo si estaba "reservada" y ya no tiene reservas activas. */
     private function liberarMesaSiCorresponde(int $mesaId): void
     {
         $mesa = Mesa::find($mesaId);
