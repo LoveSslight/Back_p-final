@@ -55,7 +55,7 @@ Probar con los archivos `api.http` (extensión *REST Client* de VS Code).
 | GET | `/reservas/estado/{estado}` | `pendiente` \| `confirmada` \| `cancelada` \| `finalizada` |
 | GET | `/reservas/{id}` | Detalle de una reserva |
 | POST | `/reservas` | Body: `nombre_cliente`, `telefono_cliente`, `cantidad_personas`, `fecha`, `hora`, `mesa_id`, `observaciones` (opcional) |
-| PUT | `/reservas/{id}` | Edita `fecha`, `hora`, `mesa_id`, `cantidad_personas`, `observaciones` |
+| PUT | `/reservas/{id}` | Edita `nombre_cliente`, `telefono_cliente`, `fecha`, `hora`, `mesa_id`, `cantidad_personas`, `observaciones` y, opcionalmente, `estado` |
 | PATCH | `/reservas/{id}/cancelar` | Cancela la reserva (también acepta POST) |
 | PATCH | `/reservas/{id}/estado` | Body: `estado` (confirmar, finalizar o cancelar) |
 
