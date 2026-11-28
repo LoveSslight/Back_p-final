@@ -18,7 +18,7 @@ Requisitos: XAMPP con MySQL encendido, PHP 8.2+ (`php -v`) y Composer.
 # En cada carpeta ms-*/
 cd ms-auth
 composer install
-copy .env.example .env        # (Linux/Mac: cp .env.example .env) y ajusta DB_PASS si tu root tiene contraseña
+copy .env.example .env        # (Linux/Mac: cp .env.example .env) y ajusta DB_PASS si el root tiene contraseña
 php -S localhost:8001 -t app/public
 ```
 
